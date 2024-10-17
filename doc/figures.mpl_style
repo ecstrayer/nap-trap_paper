@@ -1,0 +1,13 @@
+
+xtick.labelsize : 6
+ytick.labelsize : 6
+axes.spines.top : False
+axes.spines.right : False
+axes.labelpad : 2
+axes.labelweight : normal
+font.family : arial
+axes.linewidth : 0.24
+xtick.major.width : 0.24
+xtick.minor.width : 0.24
+ytick.major.width : 0.24
+ytick.minor.width : 0.24

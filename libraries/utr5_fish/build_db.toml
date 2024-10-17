@@ -1,0 +1,130 @@
+[paths]
+db_path = 'output/utr5_fish/utr5_fish.db'
+schema_path = 'doc/db_schema.sql'
+output_path = 'output/utr5_fish/'
+fasta_path = 'libraries/utr5_fish/reporters.fa'
+selector_path = 'libraries/utr5_fish/selector.toml'
+
+[constants]
+adaptor_5p = 'GAATACAAGCCCTACACGACGCTCTTCCGATCT'
+adaptor_3p = 'GTAAACATGGTGAGCAAGGGCGAGGACTACAAAGACCATGACGGTGATTATAAAGATCATGACATCGATTACAAGGATGACGATGACAAGGAGCTGTTCACCGGGGTGGTGCCCATCCTGGTCGAGCTGGACGGCGACGTAAACGGCCACAAGTTCAGCGTGTCCGGCGAGGGCGAGGGCGATGCCACCTACGGCAAGCTGACCCTGAAGTTCATCTGCACCACCGGCAAGCTGCCCGTGCCCTGGCCCACCCTCGTGACCACCCTGACCTACGGCGTGCAGTGCTTCAGCCGCTACCCCGACCACATGAAGCAGCACGACTTCTTCAAGTCCGCCATGCCCGAAGGCTACGTCCAGGAGCGCACCATCTTCTTCAAGGACGACGGCAACTACAAGACCCGCGCCGAGGTGAAGTTCGAGGGCGACACCCTGGTGAACCGCATCGAGCTGAAGGGCATCGACTTCAAGGAGGACGGCAACATCCTGGGGCACAAGCTGGAGTACAACTACAACAGCCACAACGTCTATATCATGGCCGACAAGCAGAAGAACGGCATCAAGGTGAACTTCAAGATCCGCCACAACATCGAGGACGGCAGCGTGCAGCTCGCCGACCACTACCAGCAGAACACCCCCATCGGCGACGGCCCCGTGCTGCTGCCCGACAACCACTACCTGAGCACCCAGTCCGCCCTGAGCAAAGACCCCAACGAGAAGCGCGATCACATGGTCCTGCTGGAGTTCGTGACCGCCGCCGGGATCACTCTCGGCATGGACGAGCTGTACAAGAAGCTTAGCCATGGCTTCCCGCCGGCGGTGGCGGCGCAGGATGATGGCACGCTGCCCATGTCTTGTGCCCAGGAGAGCGGGATGGACCGTCACCCTGCAGCCTGTGCTTCTGCTAGGATCAATGTGTGACTCGAGCCTCTAGAACTATAGTGAGTCGTATTACGTAGATCCAGACATGATAAGA'
+main_orf_start = 6
+kozak_score_path = 'doc/kozak.json'
+
+[features]
+kmer_counter = [{kmax = 6}]
+orf_finder = [{start_codons = ['ATG']}]
+#structure = [{rna_temperature = 28, outpath = 'output/utr5_fish/tmp/'}, {rna_temperature = 37, outpath = 'output/utr5_fish/tmp/'}]
+
+[analyses]
+enrichment = [{rnum = 0.1, kmin = 1, kmax = 6}]
+feature_correlation = [{}]
+
+[data.functions]
+calculate_delta = [{samples = ['pa_2hpf','sv40_2hpf','pa_6hpf','sv40_6hpf','hek293t_12h'], num_run_type = 'flag_pulldown', denom_run_type = 'input', data_type = 'translation'}]
+
+[data.spike_ins]
+pa_2hpf = {spike_ins_to_exclude = ['ntrap_spike_3']}
+sv40_2hpf = {spike_ins_to_exclude = ['ntrap_spike_3']}
+pa_6hpf = {spike_ins_to_exclude = ['ntrap_spike_3']}
+sv40_6hpf = {spike_ins_to_exclude = ['ntrap_spike_3']}
+
+[data.count_paths]
+ntrap_utr5_fish_pa_sv40 = 'data/utr5_fish/ntrap_utr5_fish_pa_sv40_counts.json'
+ntrap_utr5_hek293t = 'data/utr5_fish/ntrap_utr5_hek293t_counts.json'
+polysome_utr5_hek293t = 'data/utr5_fish/ntrap_utr5_hek293t_counts.json'
+
+[data.samples.pa_2hpf]
+experiment_name = 'ntrap_utr5_fish_pa_sv40'
+collection_time = 2
+library = '60A'
+organism = 'Danio rerio'
+[data.samples.pa_2hpf.runs]
+AGR003825 = {replicate_name = 'B1', run_type = 'input'}
+AGR003826 = {replicate_name = 'B2', run_type = 'input'}
+AGR003829 = {replicate_name = 'B1', run_type = 'flag_pulldown'}
+AGR003830 = {replicate_name = 'B2', run_type = 'flag_pulldown'}
+
+
+
+[data.samples.sv40_2hpf]
+experiment_name = 'ntrap_utr5_fish_pa_sv40'
+collection_time = 2
+library = '60A'
+organism = 'Danio rerio'
+
+[data.samples.sv40_2hpf.runs]
+AGR003827 = {replicate_name = 'B1', run_type = 'input'}
+AGR003828 = {replicate_name = 'B2', run_type = 'input'}
+AGR003831 = {replicate_name = 'B1', run_type = 'flag_pulldown'}
+AGR003832 = {replicate_name = 'B2', run_type = 'flag_pulldown'}
+
+
+[data.samples.pa_6hpf]
+experiment_name = 'ntrap_utr5_fish_pa_sv40'
+collection_time = 6
+library = '60A'
+organism = 'Danio rerio'
+
+[data.samples.pa_6hpf.runs]
+AGR003833 = {replicate_name = 'B1', run_type = 'input'}
+AGR003834 = {replicate_name = 'B2', run_type = 'input'}
+AGR003837 = {replicate_name = 'B1', run_type = 'flag_pulldown'}
+AGR003838 = {replicate_name = 'B2', run_type = 'flag_pulldown'}
+
+
+[data.samples.sv40_6hpf]
+experiment_name = 'ntrap_utr5_fish_pa_sv40'
+collection_time = 6
+library = '60A'
+organism = 'Danio rerio'
+
+[data.samples.sv40_6hpf.runs]
+AGR003835 = {replicate_name = 'B1', run_type = 'input'}
+AGR003836 = {replicate_name = 'B2', run_type = 'input'}
+AGR003839 = {replicate_name = 'B1', run_type = 'flag_pulldown'}
+AGR003840 = {replicate_name = 'B2', run_type = 'flag_pulldown'}
+
+[data.samples.hek293t_12h]
+experiment_name = 'ntrap_utr5_hek293t'
+time = 12
+library = '60A'
+collection_time = 12
+organism = 'Homo sapiens'
+
+[data.samples.hek293t_12h.runs]
+AGR003969 = {replicate_name = 'B1', run_type = 'input'}
+AGR003970 = {replicate_name = 'B2', run_type = 'input'}
+AGR003971 = {replicate_name = 'B3', run_type = 'input'}
+AGR003972 = {replicate_name = 'B4', run_type = 'input'}
+AGR003973 = {replicate_name = 'B1', run_type = 'flag_pulldown'}
+AGR003974 = {replicate_name = 'B2', run_type = 'flag_pulldown'}
+AGR003975 = {replicate_name = 'B3', run_type = 'flag_pulldown'}
+AGR003976 = {replicate_name = 'B4', run_type = 'flag_pulldown'}
+
+
+
+[data.samples.hek293t_poly]
+experiment_name = 'polysome_utr5_hek293t'
+time = 12
+library = '60A'
+collection_time = 12
+organism = 'Homo sapiens'
+
+[data.samples.hek293t_poly.runs]
+AGR004793 = {replicate_name = 'B1', run_type = 'r1'}
+AGR004795 = {replicate_name = 'B1', run_type = 'r1'}
+AGR004801 = {replicate_name = 'B1', run_type = 'r2'}
+AGR004803 = {replicate_name = 'B1', run_type = 'r2'}
+AGR004805 = {replicate_name = 'B1', run_type = 'r3'}
+AGR004807 = {replicate_name = 'B1', run_type = 'r3'}
+AGR004809 = {replicate_name = 'B1', run_type = 'r4'}
+AGR004811 = {replicate_name = 'B1', run_type = 'r4'}
+AGR004813 = {replicate_name = 'B1', run_type = 'r4'}
+AGR004815 = {replicate_name = 'B1', run_type = 'r6.5'}
+AGR004817 = {replicate_name = 'B1', run_type = 'r7.5'}
+AGR004819 = {replicate_name = 'B1', run_type = 'r9'}
+AGR004821 = {replicate_name = 'B1', run_type = 'r11'}
+
+
+

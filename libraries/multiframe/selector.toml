@@ -1,0 +1,11 @@
+[selectors]
+
+[selectors.mf_pilot]
+sample_names = ['mf_fish_test']
+data_types = ['mean_FLAG-translation', 'mean_HA-translation', 'mean_MYC-translation']
+read_filters = [['input','raw_count', '100']]
+features_to_include = []
+features_to_exclude = []
+filter_features = []
+
+

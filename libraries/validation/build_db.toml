@@ -1,0 +1,50 @@
+[paths]
+db_path = 'output/validation/validation.db'
+schema_path = 'doc/db_schema.sql'
+output_path = 'output/validation/'
+fasta_path = 'libraries/validation/reporters.fa'
+
+[constants]
+adaptor_5p = 'GAATACAAGCCCTACACGACGCTCTTCCGATCT'
+adaptor_3p = 'GCCGTAAACATGGTGAGCAAGGGCGAGGACTACAAAGACCATGACGGTGATTATAAAGATCATGACATCGATTACAAGGATGACGATGACAAGGAGCTGTTCACCGGGGTGGTGCCCATCCTGGTCGAGCTGGACGGCGACGTAAACGGCCACAAGTTCAGCGTGTCCGGCGAGGGCGAGGGCGATGCCACCTACGGCAAGCTGACCCTGAAGTTCATCTGCACCACCGGCAAGCTGCCCGTGCCCTGGCCCACCCTCGTGACCACCCTGACCTACGGCGTGCAGTGCTTCAGCCGCTACCCCGACCACATGAAGCAGCACGACTTCTTCAAGTCCGCCATGCCCGAAGGCTACGTCCAGGAGCGCACCATCTTCTTCAAGGACGACGGCAACTACAAGACCCGCGCCGAGGTGAAGTTCGAGGGCGACACCCTGGTGAACCGCATCGAGCTGAAGGGCATCGACTTCAAGGAGGACGGCAACATCCTGGGGCACAAGCTGGAGTACAACTACAACAGCCACAACGTCTATATCATGGCCGACAAGCAGAAGAACGGCATCAAGGTGAACTTCAAGATCCGCCACAACATCGAGGACGGCAGCGTGCAGCTCGCCGACCACTACCAGCAGAACACCCCCATCGGCGACGGCCCCGTGCTGCTGCCCGACAACCACTACCTGAGCACCCAGTCCGCCCTGAGCAAAGACCCCAACGAGAAGCGCGATCACATGGTCCTGCTGGAGTTCGTGACCGCCGCCGGGATCACTCTCGGCATGGACGAGCTGTACAAGAAGCTTAGCCATGGCTTCCCGCCGGCGGTGGCGGCGCAGGATGATGGCACGCTGCCCATGTCTTGTGCCCAGGAGAGCGGGATGGACCGTCACCCTGCAGCCTGTGCTTCTGCTAGGATCAATGTGTGACTCGAGCCTCTAGAACTATAGTGAGTCGTATTACGTAGATCCAGACATGATAAGA'
+main_orf_start = 9
+kozak_score_path = 'doc/kozak.json'
+
+[features]
+kmer_counter = [{kmax = 6}]
+orf_finder = [{start_codons = ['ATG']}]
+#structure = [{rna_temperature = 28, outpath = 'output/utr5_fish/tmp/'}]
+
+[analyses]
+enrichment = [{rnum = 0.1, kmin = 1, kmax = 6}]
+feature_correlation = [{}]
+
+[data.functions]
+calculate_delta = [{samples = ['pa_2hpf','pa_6hpf'], num_run_type = 'flag_pulldown', denom_run_type = 'input', data_type = 'translation'}]
+
+
+[data.count_paths]
+ntrap_valid_fish = 'data/validation/ntrap_validation_counts.json'
+
+[data.samples.valid_pa_2hpf]
+experiment_name = 'ntrap_valid_fish'
+collection_time = 2
+library = '60A'
+organism = 'Danio rerio'
+
+[data.samples.valid_pa_2hpf.runs]
+AGR003995 = {replicate_name = 'B1', run_type = 'input'}
+AGR004001 = {replicate_name = 'B1', run_type = 'flag_pulldown'}
+
+
+[data.samples.valid_pa_6hpf]
+experiment_name = 'ntrap_valid_fish'
+collection_time = 6
+library = '60A'
+organism = 'Danio rerio'
+
+[data.samples.valid_pa_6hpf.runs]
+AGR003997 = {replicate_name = 'B1', run_type = 'input'}
+AGR004003 = {replicate_name = 'B1', run_type = 'flag_pulldown'}
+
+
