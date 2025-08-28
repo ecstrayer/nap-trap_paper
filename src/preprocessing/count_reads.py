@@ -6,20 +6,23 @@ import glob
 import multiprocessing
 import json
 import os
-import ast
 import subprocess
 
 file_path = '/'.join(os.path.realpath(__file__).split('/')[:-1]) + '/'
-
+paired_end = False
 
 
 class Aligned_Read:
-    
-    __slots__ = 'read_id', 'umi', 'flags', 'reference_name', 'start', 'mapq', 'cigar_str', 'mate_reference_name', 'mate_start', 'inferred_size', 'sequence', 'quality_score', 'AS', 'XS', 'YS', 'XN', 'XM', 'XO', 'XG', 'NM', 'YF', 'YT', 'MD', 'matches'
 
-    def __init__(self, l):
+    __slots__ = ('read_id', 'umi', 'flags', 'reference_name', 'start', 'mapq', 'cigar_str', 'mate_reference_name', 'mate_start', 'inferred_size', 'sequence', 'quality_score', 'AS', 'XS', 'YS', 'XN', 'XM', 'XO', 'XG', 'NM', 'YF', 'YT', 'MD', 'matches', 'read_full', 'edit_distance', 'min_matches')
 
-        l = l.split('\t')
+    def __init__(self):
+
+        self.read_full = False
+
+    def add_read(self, l):
+
+        l = l.strip('\n').split('\t')
         read_id = l[0].split('#')
         self.read_id = read_id[0]
         self.umi = read_id[1]
@@ -36,6 +39,7 @@ class Aligned_Read:
         self.add_tags(l[11:])
         self.matches = 0
         self.read_cigar()
+        self.read_full = True
 
     def read_cigar(self):
 
@@ -69,16 +73,21 @@ class Aligned_Read:
 
             setattr(self,k,v)
 
-    def read_passed(self, edit_distance, min_matches):
+    def read_passed(self):
 
-        if edit_distance <= self.NM or self.matches < min_matches:
+        if self.edit_distance <= self.NM or self.min_matches < self.matches:
             return False
         else:
             return True
+        
+    def __bool__(self):
+        return self.read_full
+
 
 
 
 class ReadPair:
+
 
     edit_distance_r1 = 100
     min_matches_r1 = 0
@@ -94,9 +103,9 @@ class ReadPair:
     def add_read(self, read):
     
         if self.read1 == None:
-            self.read1 = Aligned_Read(read)
+            self.read1 = Aligned_Read().add_read(read)
         elif self.read2 == None:
-            self.read2 = Aligned_Read(read)
+            self.read2 = Aligned_Read().add_read(read)
             self.read_full = True
         else:
             raise Exception('Read pair already full')
@@ -131,52 +140,51 @@ class ReadPair:
 
 
 
-
 def read_accepted_hits(fpath):
 
-
     ftype = '.'.join(fpath.split('.')[1:])
-
     reporter_dic = {}
     
     sproc_dict = {
         'bam' : ['samtools','view', fpath],
         'sam' : ['cat', fpath],
-        'sam.zst' : ['zstd', '-d', '-f', '-c', fpath]      
+        'sam.zst' : ['zstdcat', fpath]      
     }
-
-
 
     if ftype not in sproc_dict:
         raise Exception(f'File type {ftype} not valid')
 
-
     proc = subprocess.Popen(sproc_dict[ftype], stdout= subprocess.PIPE)
     run_name = fpath.split('/')[-3]
 
-    read_pair = ReadPair()
+    mapped_read = ReadPair() if paired_end else Aligned_Read()
+
 
     for l in proc.stdout:
         l = l.decode('utf-8')
-
         if l.startswith('@'):
-            continue
+            if l.startswith('@PG'):
+                bowtie2_cl = l.split('CL:')[-1]
+                paired_end_status = '-1' in bowtie2_cl and '-2' in bowtie2_cl 
+                if paired_end_status != paired_end:
+                    raise Exception(f'The {ftype} file does not match the paired end specification. Please review the command used to generate the mapped reads {bowtie2_cl}.')        
         else:
-            read_pair.add_read(l)
+            mapped_read.add_read(l)    
 
             try:
-                if read_pair:
-                    if read_pair.read_passed():
-                        reporter_id = read_pair.reference_name
+                if mapped_read:
+                    if mapped_read.read_passed():
+                        reporter_id = mapped_read.reference_name
                         if reporter_id not in reporter_dic:
                             reporter_dic[reporter_id] = []
-                        reporter_dic[reporter_id].append(read_pair.umi)
-
-                    read_pair = ReadPair()
+                        reporter_dic[reporter_id].append(mapped_read.umi)
+                    mapped_read = ReadPair() if paired_end else Aligned_Read()
+     
             except Exception as e:
-                print(e, f'{e}, file: {fpath}, read_id: {read_pair.read1.read_id}, {read_pair.read2.read_id}')
-                read_pair.read1 = read_pair.read2
-                read_pair.read2 = None
+                if paired_end:
+                    print(e, f'{e}, file: {fpath}, read_id: {mapped_read.read1.read_id}, {mapped_read.read2.read_id}')
+                    mapped_read.read1 = mapped_read.read2
+                    mapped_read.read2 = None
                 continue
 
     file_name = f'{tmp_path}{run_name}_{today}_rawcounts.json'
@@ -187,7 +195,6 @@ def read_accepted_hits(fpath):
 
 
 def read_fasta(fpath):
-
 
     reporter_dic = {}
 
@@ -212,16 +219,12 @@ def read_fasta(fpath):
         elif l.startswith('@'):
             umi = l.split('#')[-1]
 
-
-
     f.close()
 
     file_name = f'{output_path}{run_name}_{today}_rawcounts.json'
     json.dump(reporter_dic, open(file_name,'w'))
 
     return file_name
-
-
 
 
 def launch_count_umi(input_path):
@@ -239,14 +242,12 @@ def launch_count_umi(input_path):
     return sample_name,output_file
 
 
-
 def path_test(p):
 
     if not os.path.exists(p):
         os.makedirs(p)
 
     return p
-
 
 
 def merge_dic(results):
@@ -269,8 +270,9 @@ if __name__ == '__main__':
     parser.add_argument('-e',type = str,help = 'experiment id')
     parser.add_argument('-t',type = str, help = 'temporary directory')
     parser.add_argument('-p',type = int, help = 'number of processors')
+    parser.add_argument('--paired', action = 'store_true', help = 'does the sam file contain paired end mapped reads')
     parser.add_argument('-d1',type = int, default= 100, help = 'edit distance')
-    parser.add_argument('-m1', type= int, default = 10, help = 'minimum matches')
+    parser.add_argument('-m1', type = int, default = 10, help = 'minimum matches')
     parser.add_argument('-d2',type = int, default= 100, help = 'edit distance')
     parser.add_argument('-m2', type= int, default = 10, help = 'minimum matches')
 
@@ -281,6 +283,11 @@ if __name__ == '__main__':
     experiment_id = args.e
     proc_num = args.p
     tmp_path = path_test(args.t)
+
+    paired_end = args.paired
+
+    Aligned_Read.edit_distance = args.d1
+    Aligned_Read.min_matches = args.m1
 
     ReadPair.edit_distance_r1 = args.d1
     ReadPair.min_matches_r1 = args.m1
