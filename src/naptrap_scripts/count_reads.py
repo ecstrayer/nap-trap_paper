@@ -8,8 +8,10 @@ import json
 import os
 import subprocess
 
-file_path = '/'.join(os.path.realpath(__file__).split('/')[:-1]) + '/'
 paired_end = False
+tmp_path = None
+today = datetime.datetime.today().strftime('%m%d%y')
+
 
 
 class Aligned_Read:
@@ -75,7 +77,7 @@ class Aligned_Read:
 
     def read_passed(self):
 
-        if self.edit_distance <= self.NM or self.min_matches < self.matches:
+        if self.edit_distance <= self.NM or self.matches <= self.min_matches:
             return False
         else:
             return True
@@ -131,7 +133,6 @@ class ReadPair:
     def reference_name(self):
         return self.read1.reference_name
 
-
     @property
     def umi(self):
         return self.read1.umi
@@ -159,7 +160,6 @@ def read_accepted_hits(fpath):
 
     mapped_read = ReadPair() if paired_end else Aligned_Read()
 
-
     for l in proc.stdout:
         l = l.decode('utf-8')
         if l.startswith('@'):
@@ -179,7 +179,7 @@ def read_accepted_hits(fpath):
                             reporter_dic[reporter_id] = []
                         reporter_dic[reporter_id].append(mapped_read.umi)
                     mapped_read = ReadPair() if paired_end else Aligned_Read()
-     
+
             except Exception as e:
                 if paired_end:
                     print(e, f'{e}, file: {fpath}, read_id: {mapped_read.read1.read_id}, {mapped_read.read2.read_id}')
@@ -189,6 +189,7 @@ def read_accepted_hits(fpath):
 
     file_name = f'{tmp_path}{run_name}_{today}_rawcounts.json'
     json.dump(reporter_dic, open(file_name,'w'))
+    print(reporter_dic)
 
     return file_name
 
@@ -229,7 +230,7 @@ def read_fasta(fpath):
 
 def launch_count_umi(input_path):
 
-    subprocess.run(['python',f'{file_path}count_unique.py','-i',input_path], check = True)  
+    subprocess.run(['mpradb_count_unique','-i',input_path], check = True)  
     output_path = input_path.strip('_rawcounts.json')
     output_path = output_path + '_counts.json'
     sample_name = output_path.split('/')[-1].split('_')[0]
@@ -262,7 +263,7 @@ def merge_dic(results):
 #########################################################################################################
 
 
-if __name__ == '__main__':
+def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-i',type = str,help = 'regex for pipseq files')
@@ -298,9 +299,6 @@ if __name__ == '__main__':
     ftype = '.'.join(input_regex.split('.')[1:])
 
 
-    today = datetime.datetime.today()
-    today = today.strftime('%m%d%y')
-
     file_list = [f for f in glob.glob(input_regex) if not 'undet' in f]
 
     #need to fix this ...
@@ -319,3 +317,6 @@ if __name__ == '__main__':
     reporter_dic = merge_dic(results)
 
     json.dump(reporter_dic, open(f'{output_path}{experiment_id}_{today}_counts.json','w'))
+
+if __name__ == '__main__':
+    main()

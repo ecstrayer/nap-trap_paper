@@ -8,3 +8,4 @@ data/*.json
 output/*
 *.fa
 *.fai
+*egg-info*

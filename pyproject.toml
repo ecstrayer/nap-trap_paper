@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "naptrap_pipeline"
+description = "Package to analyze nap-trap data."
+version = "0.0.1"
+authors = [{name = "Ethan C Strayer", email = "ethancstrayer@gmail.com"}]
+requires-python = ">=3.9"
+dependencies = ["matplotlib"]
+license = "MPL-2.0" 
+license-files = ['LICENSE']
+readme = "README.MD"
+
+
+[tool.setuptools.packages.find]
+where = ["src"] 
+
+[project.scripts]
+count_reads = "naptrap_scripts.count_reads:main"
+count_unique = "naptrap_scripts.count_unique:main"
+
+[project.urls]
+homepage = "https://github.com/ecstrayer/nap-trap_paper"

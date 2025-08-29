@@ -79,7 +79,8 @@ class Umi:
 
 #####################################################################################################################################################
 
-if __name__ == '__main__':
+
+def main():
     
     parser = argparse.ArgumentParser()
     parser.add_argument('-i',type = str,help = 'input_file_path')
@@ -97,3 +98,6 @@ if __name__ == '__main__':
 
     json.dump(count_dic,open(f'{output_path}_counts.json','w'))
 
+
+if __name__ == '__main__':
+    main()
