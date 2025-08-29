@@ -50,7 +50,7 @@ def pvalue_formater(ax, corr, p, n, rsquared = False):
         p = math.ceil(p * 10000) / 10000
         p =  f'{p:0.2}'
     else:
-        p = 10**-101 if p == 0 else p 
+        p = 10**-300 if p == 0 else p 
         e = int(np.log10(p)) + 1
         p = f'10^{e}'
 

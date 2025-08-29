@@ -4,7 +4,7 @@ import numpy as np
 import toml
 import sqlite3
 
-from src.database import selector,db_to_sqlite
+from mpradb.database import selector,db_to_sqlite
 
 
 class MPRA_DB(db_to_sqlite.DB_SQLite):

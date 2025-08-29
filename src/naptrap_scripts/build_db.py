@@ -3,10 +3,10 @@ import toml
 import pyfaidx
 import warnings
 
-import src.database.mpra_db as mpra_db
-import src.db_features as db_features
-import src.db_data as db_data
-import src.db_analysis as db_analysis
+import mpradb.database.mpra_db as mpra_db
+import mpradb.db_features as db_features
+import mpradb.db_data as db_data
+import mpradb.db_analysis as db_analysis
 
 #functions to add features to the database
 
@@ -120,7 +120,7 @@ def main():
     parser.add_argument('--toml_path', help = 'Path to build toml')
     args = parser.parse_args()
 
-    params = toml.load('libraries/utr5_fish/build_db.toml')
+    params = toml.load(args.toml_path)
 
     db_path = params['paths']['db_path']
     schema_path = params['paths']['schema_path']

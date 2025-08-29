@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt; plt.ion()
 import os
 
-import src.db_plot.plotter as plotter
+import mpradb.db_plot.plotter as plotter
 
 
 

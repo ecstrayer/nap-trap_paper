@@ -1,8 +1,8 @@
 import os 
 import sys
 import toml
-import src.database.build_db as build_db
-import src.database.mpra_db as mpra_db
+import mpradb.database.build_db as build_db
+import mpradb.database.mpra_db as mpra_db
 
 
 def build_from_toml(build_path):

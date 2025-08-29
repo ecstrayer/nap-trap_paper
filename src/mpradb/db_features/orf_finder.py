@@ -1,5 +1,5 @@
 import json
-from src.db_features import kozak
+from mpradb.db_features import kozak
 
 
 class ORF:

@@ -6,8 +6,8 @@ import os
 import sys
 
 
-from src.database import mpra_db
-from src.db_plot import plotter
+from mpradb.database import mpra_db
+from mpradb.db_plot import plotter
 
 
 class Motif:

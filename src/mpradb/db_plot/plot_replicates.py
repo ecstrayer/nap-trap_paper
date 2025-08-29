@@ -5,7 +5,7 @@ import numpy as np
 
 import os
 
-import src.db_plot.plotter as plotter 
+import mpradb.db_plot.plotter as plotter 
 
 
 def plot_replicates(db, selector_name, reporter_names_to_label = None, reporter_labels = None, colors = None):

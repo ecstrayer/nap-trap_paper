@@ -2,7 +2,7 @@ import numpy as np
 import scipy.stats
 import itertools
 
-import src.db_plot.plotter as plotter
+import mpradb.db_plot.plotter as plotter
 
 
 

@@ -2,8 +2,8 @@ import os
 import numpy as np
 
 
-from src.db_analysis import model
-from src.db_plot import plotter
+from mpradb.db_analysis import model
+from mpradb.db_plot import plotter
 
 
 

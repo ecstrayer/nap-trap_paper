@@ -21,6 +21,7 @@ where = ["src"]
 [project.scripts]
 count_reads = "naptrap_scripts.count_reads:main"
 count_unique = "naptrap_scripts.count_unique:main"
+build_db = "naptrap_scripts.build_db:main"
 
 [project.urls]
 homepage = "https://github.com/ecstrayer/nap-trap_paper"

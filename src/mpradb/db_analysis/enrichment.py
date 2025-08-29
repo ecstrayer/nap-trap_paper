@@ -2,7 +2,7 @@ import numpy as np
 import scipy.stats
 import itertools
 
-from src.db_analysis import calculate_enrichment
+from mpradb.db_analysis import calculate_enrichment
 
 
 
