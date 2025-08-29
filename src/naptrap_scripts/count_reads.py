@@ -230,7 +230,7 @@ def read_fasta(fpath):
 
 def launch_count_umi(input_path):
 
-    subprocess.run(['mpradb_count_unique','-i',input_path], check = True)  
+    subprocess.run(['count_unique','-i',input_path], check = True)  
     output_path = input_path.strip('_rawcounts.json')
     output_path = output_path + '_counts.json'
     sample_name = output_path.split('/')[-1].split('_')[0]
