@@ -29,7 +29,7 @@ class Aligned_Read:
         self.read_id = read_id[0]
         self.umi = read_id[1]
         self.flags = int(l[1])
-        self.reference_name = l[2]
+        self.reference_name = l[2].split('#')[0]
         self.start = l[3]
         self.mapq = l[4]
         self.cigar_str = l[5]
