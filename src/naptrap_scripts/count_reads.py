@@ -189,21 +189,19 @@ def read_accepted_hits(path_run_id):
 
     file_name = f'{tmp_path}{run_id}_{today}_rawcounts.json'
     json.dump(reporter_dic, open(file_name,'w'))
-    print(reporter_dic)
 
     return file_name
 
 
 
-def read_fasta(fpath):
+def read_fasta(path_run_id):
 
+    fpath, run_id = path_run_id
     reporter_dic = {}
 
     f = subprocess.Popen(['zstd', '-d', '-f', '-c',fpath], stdout= subprocess.PIPE)
     f = f.stdout 
 
-    run_name = fpath.split('/')[-1].split('_')[0]
-    print(run_name)
 
     for i,l in enumerate(f):
         l = l.decode('utf-8')
@@ -222,7 +220,7 @@ def read_fasta(fpath):
 
     f.close()
 
-    file_name = f'{output_path}{run_name}_{today}_rawcounts.json'
+    file_name = f'{tmp_path}{run_id}_{today}_rawcounts.json'
     json.dump(reporter_dic, open(file_name,'w'))
 
     return file_name
@@ -323,7 +321,7 @@ def main():
 
     with multiprocessing.Pool(proc_num) as pool:
         if ftype == 'sam.zst' or ftype == 'bam' or ftype == 'sam':
-            results = pool.map(read_accepted_hits,path_run_ids)  
+            results = pool.map(read_accepted_hits, path_run_ids)  
         elif ftype == 'fasta':
             results = pool.map(read_fasta,path_run_ids)
         else:
