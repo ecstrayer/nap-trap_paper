@@ -279,7 +279,7 @@ def get_unique_run_ids(path_list, idx = -1):
 
 
 def main():
-
+    global tmp_path, paired_end
     parser = argparse.ArgumentParser()
     parser.add_argument('-i',type = str,help = 'regex for pipseq files')
     parser.add_argument('-o',type = str,help = 'output path')
