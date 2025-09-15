@@ -141,8 +141,9 @@ class ReadPair:
 
 
 
-def read_accepted_hits(fpath):
+def read_accepted_hits(path_run_id):
 
+    fpath, run_id = path_run_id
     ftype = '.'.join(fpath.split('.')[1:])
     reporter_dic = {}
     
@@ -156,7 +157,6 @@ def read_accepted_hits(fpath):
         raise Exception(f'File type {ftype} not valid')
 
     proc = subprocess.Popen(sproc_dict[ftype], stdout= subprocess.PIPE)
-    run_name = fpath.split('/')[-3]
 
     mapped_read = ReadPair() if paired_end else Aligned_Read()
 
@@ -187,7 +187,7 @@ def read_accepted_hits(fpath):
                     mapped_read.read2 = None
                 continue
 
-    file_name = f'{tmp_path}{run_name}_{today}_rawcounts.json'
+    file_name = f'{tmp_path}{run_id}_{today}_rawcounts.json'
     json.dump(reporter_dic, open(file_name,'w'))
     print(reporter_dic)
 
@@ -260,6 +260,23 @@ def merge_dic(results):
 
     return assembled_dic
 
+
+def get_unique_run_ids(path_list, idx = -1):
+
+    number_of_files = len(path_list)
+    new_pl = [f.split('.')[0].split('/')[idx] for f in path_list]
+    
+    if len(set(new_pl)) != number_of_files:
+        path_lookup = get_unique_run_ids(path_list = path_list, idx = idx - 1)
+    else:
+        path_lookup = [(path,run_id) for path,run_id in zip(path_list,new_pl)]
+
+    return path_lookup
+
+
+
+
+
 #########################################################################################################
 
 
@@ -299,15 +316,16 @@ def main():
     ftype = '.'.join(input_regex.split('.')[1:])
 
 
-    file_list = [f for f in glob.glob(input_regex) if not 'undet' in f]
+    path_list = [f for f in glob.glob(input_regex) if not 'undet' in f]
+    path_run_ids = get_unique_run_ids(path_list = path_list)
 
     #need to fix this ...
 
     with multiprocessing.Pool(proc_num) as pool:
         if ftype == 'sam.zst' or ftype == 'bam' or ftype == 'sam':
-            results = pool.map(read_accepted_hits,file_list)  
+            results = pool.map(read_accepted_hits,path_run_ids)  
         elif ftype == 'fasta':
-            results = pool.map(read_fasta,file_list)
+            results = pool.map(read_fasta,path_run_ids)
         else:
             raise Exception(f'File type {ftype} not valid')
 
