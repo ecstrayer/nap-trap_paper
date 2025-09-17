@@ -49,8 +49,8 @@ def add_features(db, feature_params):
             feature_module = getattr(db_features, feature)
             try:
                 feature_module.to_db(db, args)
-            except:
-                raise Exception('All feature_modules need a to_db(db,params) function')
+            except Exception as e:
+                raise Exception(f'{e}: \n All feature_modules need a to_db(db,params) function')
 
 
 def add_data(db, data_params):
@@ -79,8 +79,8 @@ def add_analysis(db, analysis_params):
             analysis_module = getattr(db_analysis, analysis)
             try:
                 analysis_module.to_db(db, args)
-            except:
-                raise Exception('All analysis_modules need a to_db(db,params) function')
+            except Exception as e:
+                raise Exception(f'{e}:\n All analysis_modules need a to_db(db,params) function')
 
 
 def make_db(db, params):

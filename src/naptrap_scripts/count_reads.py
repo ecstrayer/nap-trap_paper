@@ -229,9 +229,10 @@ def read_fasta(path_run_id):
 def launch_count_umi(input_path):
 
     subprocess.run(['count_unique','-i',input_path], check = True)  
-    output_path = input_path.strip('_rawcounts.json')
+    output_path = input_path.strip(f'_rawcounts.json')
+    sample_name = output_path.split('/')[-1]#.split('_')[0]
+    sample_name = '_'.join(sample_name.split('_')[:-1])
     output_path = output_path + '_counts.json'
-    sample_name = output_path.split('/')[-1].split('_')[0]
     output_file = json.load(open(output_path,'r'))
 
 
@@ -279,7 +280,7 @@ def get_unique_run_ids(path_list, idx = -1):
 
 
 def main():
-
+    global tmp_path, paired_end
     parser = argparse.ArgumentParser()
     parser.add_argument('-i',type = str,help = 'regex for pipseq files')
     parser.add_argument('-o',type = str,help = 'output path')

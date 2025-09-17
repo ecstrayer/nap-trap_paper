@@ -17,9 +17,6 @@ def plot_enrichment(db, selector_id, klen = 6):
     kmers = db['reporter_group_id', 'feature_name','enrichment_pvalue','enrichment_fold_change'].where((db['reporter_group_id'].in_(rgids)) & (db['feature_type'] == f'count_{klen}mer') &  (db['enrichment_pvalue'] != 1)).to_dict(group_by_key = True, key = ['reporter_group_id'])
 
 
-    reporter_colors = np.zeros()
-
-
     for rgid, fenrich in kmers.items():
         fenrich = sorted(fenrich, key = lambda a : a[-1])
         group_name, group_type = rgroup_lookup[rgid]
