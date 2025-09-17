@@ -24,8 +24,11 @@ g_margin_bottom = 1
 g_axis_width = 3
 g_axis_height = 3
 
-
-plt.style.use('doc/figures.mpl_style')
+from pathlib import Path
+package_root = Path(__file__).parent.parent.parent.parent
+style_path = package_root / 'doc' / 'figures.mpl_style'
+plt.style.use(str(style_path))
+#plt.style.use('doc/figures.mpl_style')
 
 
 

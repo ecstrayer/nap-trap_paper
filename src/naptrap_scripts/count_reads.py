@@ -229,9 +229,10 @@ def read_fasta(path_run_id):
 def launch_count_umi(input_path):
 
     subprocess.run(['count_unique','-i',input_path], check = True)  
-    output_path = input_path.strip('_rawcounts.json')
+    output_path = input_path.strip(f'_rawcounts.json')
+    sample_name = output_path.split('/')[-1]#.split('_')[0]
+    sample_name = '_'.join(sample_name.split('_')[:-1])
     output_path = output_path + '_counts.json'
-    sample_name = output_path.split('/')[-1].split('_')[0]
     output_file = json.load(open(output_path,'r'))
 
 
