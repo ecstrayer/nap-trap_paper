@@ -144,7 +144,8 @@ class ReadPair:
 def read_accepted_hits(path_run_id):
 
     fpath, run_id = path_run_id
-    ftype = '.'.join(fpath.split('.')[1:])
+    ftype = fpath.split('/')[-1] #Making sure '.' in fpath doesnt interfere with ftype
+    ftype = '.'.join(ftype.split('.')[1:])
     reporter_dic = {}
     
     sproc_dict = {

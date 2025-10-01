@@ -133,7 +133,7 @@ def plot_plot(x, y, xlabel, ylabel,figargs = None, **kwargs):
 
 
 
-def plot_scatter(x, y, xlabel, ylabel, s = 2, alpha = 1, c = None, cmap = 'viridis', same_axis = True, plot_density = True, edgecolor = "none", show_pearsonr = True, set_maxv = True,  maxv = None, fig_ax = None, rasterized = True,rsquared =False, lin_regress = False, **kwargs):
+def plot_scatter(x, y, xlabel, ylabel, s = 2, alpha = 1, c = None, cmap = 'viridis', same_axis = True, plot_density = True, edgecolor = "none",scatter_label=None, show_pearsonr = True, set_maxv = True,  maxv = None, fig_ax = None, rasterized = True,rsquared =False, lin_regress = False, **kwargs):
 
     if plot_density == True:
         xy = np.vstack([x,y])
@@ -156,7 +156,7 @@ def plot_scatter(x, y, xlabel, ylabel, s = 2, alpha = 1, c = None, cmap = 'virid
     maxv = m[-1] if max_ax == 2 else maxv
 
     ax.set(**kwargs)
-    ax.scatter(x, y, s = s, alpha = alpha, c = c, edgecolor = edgecolor, cmap = cmap, rasterized= rasterized)
+    ax.scatter(x, y, s = s, alpha = alpha, c = c, edgecolor = edgecolor, cmap = cmap, rasterized= rasterized,label=scatter_label)
     ax.autoscale()
     ax.set_xlabel(xlabel, fontsize = 8, labelpad = 1)
     ax.set_ylabel(ylabel, fontsize = 8,labelpad = 1)

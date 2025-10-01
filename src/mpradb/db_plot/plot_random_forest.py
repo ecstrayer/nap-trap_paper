@@ -7,7 +7,7 @@ from mpradb.db_plot import plotter
 
 
 
-def plot_predictions(db, fnum):
+def plot_predictions(db,output_path, fnum):
      
     for s in db.selectors:
         for i,m in enumerate(s.models):
@@ -45,24 +45,28 @@ def plot_predictions(db, fnum):
                 corr.append(c)
             
             pfi_fig, pfi_ax = plotter.plot_bar(xticks = fn, height = corr, yerr = None, ylabel = 'Feature Correlation')
-            #pfi_outpath = os.path.join(db.output_path,f'{m.sample_id}_{s.selector_id}_feature_importances.svg')
+            pfi_fig.show()
+            pfi_outpath = os.path.join(output_path,f'figures/{m.sample_id}_{s.selector_id}_feature_importances.svg')
+
+            pfi_fig.savefig(pfi_outpath)
+
+            
 
 
-
-
-def run_models(db, params = {'corr_plus':0.25,'corr_minus':-0.25}):
+def run_models(db,output_path, params = {'corr_plus':0.1,'corr_minus':-0.1}):
     
     corr_plus = params.get('corr_plus')
     corr_minus = params.get('corr_minus')
-
+    print(db.selectors)
     for s in db.selectors:
         s.models = []
         feature_names = db.select(['data_group_id','feature_name']).where(((db['correlation'] >= corr_plus) | (db['correlation'] <= corr_minus)) & (db['reporter_group_id'] == s.selector_id)).to_dict(group_by_key = True)
         for i,dgid in enumerate(s.data_group_ids):
+            print(f"Modelling Data group (ID):{dgid}")
             m = model.Model(s[:,feature_names[dgid]], feature_names[dgid], dgid, s.data[:,i], sel_hash = s.selector_id, model_ids = ['random_forest_regressor'], proc_num = 20, q = 0.3)
             m.train('random_forest_regressor', model_params = {'max_features' : 0.25, 'n_estimators': 200})
             m.permuted_feature_importances()
             s.models.append(m)
-        plot_predictions(db, 12)
+        plot_predictions(db,output_path, 12)
         break
 

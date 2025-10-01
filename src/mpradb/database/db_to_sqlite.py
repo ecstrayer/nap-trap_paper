@@ -542,9 +542,10 @@ class DB_SQLite(Select_to_SQL):
 
         try:
             qlen = len(q[0])
-        except:
+        except Exception as e:
+            print(q)
             self.reset_query()
-            raise Exception(f'{sql_str} \n This selector is not valid!')
+            raise Exception(f'{sql_str} \n Error: {e} :This selector is not valid!')
 
         if qlen == 1:
             return [s for e in q for s in e]

@@ -2,7 +2,7 @@ import argparse
 import toml
 import pyfaidx
 import warnings
-
+import os
 import mpradb.database.mpra_db as mpra_db
 import mpradb.db_features as db_features
 import mpradb.db_data as db_data
@@ -125,6 +125,9 @@ def main():
     db_path = params['paths']['db_path']
     schema_path = params['paths']['schema_path']
     output_path = params['paths']['output_path']
+
+    if os.path.exists(db_path):
+        os.remove(db_path)
 
     db = mpra_db.MPRA_DB(db_path = db_path, output_path = output_path, schema_path = schema_path)
     db = make_db(db, params)
