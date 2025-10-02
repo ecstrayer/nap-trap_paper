@@ -2,12 +2,19 @@ import json
 import numpy as np
 import pandas as pd
 import argparse
+import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 def read_cutoff_decision(count_path,out_path,fig_format=None,data_name = None):
 
     if not fig_format:
         fig_format = 'svg'
+    
+    fig_save_path = f"{out_path}/figures/"
+
+    if not os.path.exists(fig_save_path):
+        os.makedirs(fig_save_path)
+
 
     cutoff_list = [1,5,10,25,50,100]
     count_dict = json.load(open(count_path,'r'))
@@ -30,7 +37,7 @@ def read_cutoff_decision(count_path,out_path,fig_format=None,data_name = None):
         ax.set_xlabel(f"Read count of {data} data")
         ax.set_ylabel("Number of reporters")
         
-        fig.savefig(f"{out_path}/figures/read_vs_count_histogram_{data}.{fig_format}")
+        fig.savefig(f"{fig_save_path}read_vs_count_histogram_{data}.{fig_format}")
 
     result_df = pd.DataFrame(result_dic, index = cutoff_list).T.reset_index()
     result_df.to_csv(f"{out_path}/Cutoff_vs_Count_table.csv")
